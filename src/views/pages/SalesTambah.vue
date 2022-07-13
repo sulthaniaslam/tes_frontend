@@ -17,7 +17,7 @@
                         <th>Item</th>
                         <th>:</th>
                         <th>
-                            <select name="item" id="" v-model="data.itemSelected">
+                            <select name="item" id="" v-model="data.itemSelected" @change="onItem()">
                                 <option value="">-- Pilih Item --</option>
                                 <option v-for="(item, index) in data.item" :key="index" :value="item.id">
                                     {{item.nama_item}}
@@ -56,7 +56,12 @@
                     </tr>
                     <tr>
                         <th>
-                            <button type="submit">Simpan</button>
+                            <div v-if="!isdisabled">
+                                <button type="submit" disabled>Simpan</button>
+                            </div>
+                            <div v-else>
+                                <button type="submit">Simpan</button>
+                            </div>
                         </th>
                     </tr>
                 </thead>
@@ -79,6 +84,7 @@ export default {
                 total_bayar: 0,
                 stok : 0,
             },
+            isdisabled: true
         }
     },
     created() {
@@ -100,10 +106,12 @@ export default {
                     let th = parseInt(this.data.total_harga)
                     
                     this.data.total_bayar = qty * th
+                    this.isdisabled = true
 
                 }else{
                     this.data.stok = 0
                     console.log(response.data.message);
+                    this.isdisabled = false
                 }
             })
         },
@@ -137,6 +145,10 @@ export default {
                 this.data.item = response.data
             })
         },
+
+        onItem(){
+            this.data.qty = ''
+        }
 
     },
 }
